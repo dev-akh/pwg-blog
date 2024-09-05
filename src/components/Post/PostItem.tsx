@@ -8,11 +8,80 @@ import {
 } from '@mui/material';
 import { PostData } from '../../types/Post';
 import BlankCard from './BlankCard';
+import { useState } from 'react';
+import CustomConfirmModal from '../Modal/CustomComfirm';
+import * as api from '../../services/api';
+import axios from 'axios';
+import { capitalizeFirstLetter } from '../../services/firstCharacter';
+import CustomPostModal from '../Modal/CustomPostModal';
+import { useNavigate } from 'react-router-dom';
 
 const PostItem = ({ post }: { post: PostData }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [postOpen, setPostOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const [deleteErrorMsg, setDeleteErrorMsg] = useState<string | null>(null);
 
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedPostId(0);
+  }
+
+  const handlePostClose = () => {
+    setPostOpen(false);
+  }
+
+  const handleOpenPost = () => {
+    setPostOpen(true);
+  }
+
+  const handleViewPost = (postId: number) => {
+    navigate(`/post/${postId}`);
+  }
+
+  const handleDeleteClick = (postId: number) => {
+    setSelectedPostId(postId);
+    setOpen(true);
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (selectedPostId <= 0) {
+      alert('Select valid post to delete');
+      return;
+    }
+    setLoading(true);
+    try {
+      const postIdStr = String(selectedPostId);
+      const endpoint = api.API_ENDPOINTS.DELETE.replace(':postId', postIdStr);
+      await api.destroy(endpoint);
+      setOpen(false);
+      setDeleteErrorMsg(null);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const errorMessage = error.response.data.error || 'Error in deleting post';
+          setDeleteErrorMsg(errorMessage);
+        } else {
+          setDeleteErrorMsg('No response from server. Please try again.');
+        }
+      } else {
+        setDeleteErrorMsg('An unexpected error occurred.');
+      }
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const truncateText = (text: string, wordLimit: number) => {
+    const words = text.split(' ');
+    if (words.length <= wordLimit) {
+      return text;
+    }
+    return `${words.slice(0, wordLimit).join(' ')}...`;
   };
 
   const postDate = post?.date ?? new Date();
@@ -53,7 +122,7 @@ const PostItem = ({ post }: { post: PostData }) => {
               width: 100,
               transform: 'rotate(-45deg)',
               transformOrigin: 'center',
-              marginTop:-3,
+              marginTop: -3,
               marginRight: -2
             }}
           />
@@ -63,12 +132,12 @@ const PostItem = ({ post }: { post: PostData }) => {
           variant='h4'
           my={1}
         >
-          {post.title}
+          {truncateText(post.title, 5)}
         </Typography>
         <Typography
           variant='body1'
         >
-          {post.body}
+          {truncateText(post.body, 20)}
         </Typography>
         <Grid py={4}>
           {tags}
@@ -84,6 +153,7 @@ const PostItem = ({ post }: { post: PostData }) => {
               color: 'black',
               background: '#D9F8CF'
             }}
+            onClick={handleOpenPost}
           >
             Edit
           </Button>
@@ -97,6 +167,7 @@ const PostItem = ({ post }: { post: PostData }) => {
               color: 'black',
               background: '#F8B959'
             }}
+            onClick={() => handleViewPost(post.id)}
           >
             View
           </Button>
@@ -110,12 +181,14 @@ const PostItem = ({ post }: { post: PostData }) => {
               color: 'black',
               background: '#F95A50'
             }}
+            onClick={() => handleDeleteClick(post.id)}
           >
             Delete
           </Button>
         </Grid>
       </BlankCard>
-
+      <CustomConfirmModal open={open} onClose={handleClose} onConfirm={handleDeleteConfirm} loading={loading} body='Are you sure want to delete this post?' errorMessage={deleteErrorMsg} />
+      <CustomPostModal open={postOpen} post={post} onClose={handlePostClose} type='edit' />
     </Grid>
   )
 }

@@ -4,6 +4,7 @@ import './App.css';
 import Home from './pages/Home'
 import Login from './pages/Login'
 import RegisterPage from './pages/Register';
+import PostDetail from './pages/Post/PostDetail';
 
 function App() {
   return (
@@ -21,6 +22,10 @@ function App() {
           <Route
             path='/register'
             element={<RegisterPage />}
+          />
+          <Route
+            path='/post/:postId'
+            element={<PostDetail />}
           />
         </Routes>
       </Router>

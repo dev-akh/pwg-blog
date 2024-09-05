@@ -1,6 +1,6 @@
 export interface PostData {
   userId?: number;
-  id?: number;
+  id: number;
   date?: string;
   title: string;
   body: string;

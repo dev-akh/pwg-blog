@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 import * as type from '../types';
 import * as api from '../../services/api'
 import axios from 'axios';
+import { PostData } from '../../types/Post';
 
 export const fetchPosts = ({ limit, page }: { limit: number, page: number }) => async (dispatch: Dispatch) => {
 
@@ -31,3 +32,17 @@ export const fetchPosts = ({ limit, page }: { limit: number, page: number }) => 
     });
   }
 };
+
+export const addPost = (post: PostData) => ({
+  type: type.POST_ADD,
+  payload: post,
+});
+
+export const updatePost = (post: PostData) => ({
+  type: type.POST_UPDATE,
+  payload: post,
+});
+
+export const removeLastPost = () => ({
+  type: type.POST_REMOVE,
+});

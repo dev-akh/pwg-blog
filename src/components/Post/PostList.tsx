@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Box, Grid, Pagination, Typography } from '@mui/material';
-import { ChangeEvent } from 'react';
 import { postStates } from '../../store/reducers/post';
 import { fetchPosts } from '../../store/actions/post';
 import { PostData } from '../../types/Post';
@@ -38,7 +37,7 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, fetchPosts 
     fetchPosts({ limit: 9, page: page });
   }, [fetchPosts, limit, page]);
 
-  const handleChangePage = (event: ChangeEvent<unknown>, newPage: number): void => {
+  const handleChangePage = (_event: unknown, newPage: number): void => {
     if (page !== newPage) {
       setPage(newPage);
     }
@@ -76,7 +75,7 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, fetchPosts 
             <Pagination
               count={totalPages}
               page={page}
-              onChange={handleChangePage}
+              onChange={(event, newPage) => handleChangePage(event, newPage)}
               color="primary"
               sx={{ display: 'flex', justifyContent: 'center' }}
             />

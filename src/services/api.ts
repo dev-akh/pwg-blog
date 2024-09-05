@@ -7,7 +7,11 @@ export const API_ENDPOINTS = {
   POSTS: '/posts',
   LOGIN: '/account/login',
   REGISTER: '/account/register',
-  ACCOUNTS: '/accounts'
+  ACCOUNTS: '/accounts',
+  CREATE: '/posts/create',
+  UPDATE: '/posts/edit/:postId',
+  DELETE: '/posts/delete/:postId',
+  VIEW: '/posts/view/:postId'
   // Add more endpoints as needed
 };
 
