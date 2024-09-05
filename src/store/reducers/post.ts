@@ -1,18 +1,24 @@
 import * as type from '../types';
-import { PostData } from '../../pages/Post/Post';
+import { PostDataList } from '../../types/Post'
 
-export interface postStates{
-  posts: PostData[],
+export interface postStates {
+  posts: PostDataList,
   loading: boolean,
-  error: string | null
+  error: string | null,
 }
 const initialState: postStates = {
-  posts: [],
+  posts: {
+    data: [],
+    page: 1,
+    limit: 9,
+    totalPages: 1,
+    totalPosts: 9
+  },
   loading: false,
   error: null,
 };
 
-const reducer = (state = initialState, action: { type: string, payload: JSON}) => {
+const reducer = (state = initialState, action: { type: string, payload: JSON }) => {
   switch (action.type) {
   case type.POST:
     return {
