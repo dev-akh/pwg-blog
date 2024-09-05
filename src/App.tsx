@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import './App.css';
-import Start from './pages/Initial/Start'
-import PostList from './pages/Post/PostList';
+import Home from './pages/Home'
+import Login from './pages/Login'
+import RegisterPage from './pages/Register';
 
 function App() {
   return (
@@ -11,11 +12,15 @@ function App() {
         <Routes>
           <Route
             path='/'
-            element={<Start />}
+            element={<Home />}
           />
           <Route
-            path='/posts'
-            element={<PostList />}
+            path='/login'
+            element={<Login />}
+          />
+          <Route
+            path='/register'
+            element={<RegisterPage />}
           />
         </Routes>
       </Router>

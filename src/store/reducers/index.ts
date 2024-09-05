@@ -4,7 +4,7 @@ import storage from 'redux-persist/es/storage'
 import post from './post'
 
 const reducers = combineReducers({
-  post,
+  postReducer: post,
   // add more reducer
 })
 
