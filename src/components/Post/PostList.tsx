@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Box, Grid, Pagination, Typography } from '@mui/material';
-import { ChangeEvent } from 'react';
 import { postStates } from '../../store/reducers/post';
 import { fetchPosts } from '../../store/actions/post';
 import { PostData } from '../../types/Post';
@@ -9,25 +8,33 @@ import PostItem from './PostItem';
 import Loading from '../LoadingComponent';
 import { removeToken } from '../../utils/jwt';
 import { useNavigate } from 'react-router-dom';
+import { accountState } from '../../store/reducers/account';
+import { fetchAccounts } from '../../store/actions/account';
+import { isAdmin } from '../../services/role';
+import Widget from './Widget';
 
 interface ReducerPostStates {
   postReducer: postStates;
+  accountReducer: accountState;
 }
 const mapStateToProps = (state: ReducerPostStates) => ({
   loading: state.postReducer.loading,
   posts: state.postReducer.posts,
   error: state.postReducer.error,
+  accounts: state.accountReducer.accounts,
+  accountLading: state.accountReducer.loading
 });
 
 const mapDispatchToProps = {
   fetchPosts,
+  fetchAccounts
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, fetchPosts }) => {
+const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, accountLading, fetchPosts, fetchAccounts }) => {
   const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
   const postItems: PostData[] = posts.data;
@@ -35,10 +42,11 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, fetchPosts 
   const totalPages: number = posts.totalPages;
 
   useEffect(() => {
+    fetchAccounts();
     fetchPosts({ limit: 9, page: page });
-  }, [fetchPosts, limit, page]);
+  }, [fetchPosts, fetchAccounts, limit, page]);
 
-  const handleChangePage = (event: ChangeEvent<unknown>, newPage: number): void => {
+  const handleChangePage = (_event: unknown, newPage: number): void => {
     if (page !== newPage) {
       setPage(newPage);
     }
@@ -49,14 +57,14 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, fetchPosts 
     navigate('/login');
   }
   const postListData = postItems.length > 0 ? postItems.map((post, key) => <PostItem key={key} post={post} />) : 'Empty';
+  const admin = isAdmin(accounts);
 
   return (
     <>
-      {loading ? (
+      {loading || accountLading ? (
         <Loading />
       ) : postListData.length > 0 ? (
         <>
-
           <Grid container
             justifyContent="center"
             alignItems="center">
@@ -68,7 +76,9 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, fetchPosts 
               Post List
             </Typography>
           </Grid>
-
+          {admin && (
+            <Widget totalAccount={accounts.length} totalPost={postItems.length} totalMyPost={0}/>
+          )}
           <Grid container spacing={5}>
             {postListData}
           </Grid>
@@ -76,7 +86,7 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, fetchPosts 
             <Pagination
               count={totalPages}
               page={page}
-              onChange={handleChangePage}
+              onChange={(event, newPage) => handleChangePage(event, newPage)}
               color="primary"
               sx={{ display: 'flex', justifyContent: 'center' }}
             />

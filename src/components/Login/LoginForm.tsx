@@ -11,10 +11,12 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as api from '../../services/api'
-import { saveToken } from '../../utils/jwt';
+import { saveToken, saveUserEmail } from '../../utils/jwt';
 import { UserLoginResponse } from '../../types/User';
 import CustomModal from '../Modal/CustomModal';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { addUser } from '../../store/actions/account';
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState<string | null>('');
@@ -26,6 +28,7 @@ const LoginForm: React.FC = () => {
   const [success, setSuccess] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const closeModal = () => {
     setModalOpen(false);
@@ -54,9 +57,11 @@ const LoginForm: React.FC = () => {
       const response: UserLoginResponse = await api.post(endpoint, data);
       if (response.token !== null) {
         saveToken(response.token);
+        saveUserEmail(response.email);
         setSuccess(true);
         setAlertMessage(response.message);
         setModalOpen(true);
+        dispatch(addUser(response));
       }
 
     } catch (error: unknown) {

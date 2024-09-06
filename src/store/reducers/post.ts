@@ -1,5 +1,5 @@
 import * as type from '../types';
-import { PostDataList } from '../../types/Post'
+import { PostData, PostDataList } from '../../types/Post'
 
 export interface postStates {
   posts: PostDataList,
@@ -38,6 +38,43 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
       loading: false,
       error: action.payload,
     };
+  case type.POST_ADD:
+    return {
+      ...state,
+      posts: {
+        ...state.posts,
+        data: [action.payload, ...state.posts.data],
+      },
+    };
+  case type.POST_REMOVE_LAST:
+    return {
+      ...state,
+      posts: {
+        ...state.posts,
+        data: state.posts.data.slice(0, -1),
+      },
+    };
+  case type.POST_UPDATE:
+    const payload = action.payload as unknown as PostData;
+    return {
+      ...state,
+      posts: {
+        ...state.posts,
+        data: state.posts.data.map(post =>
+          post.id === payload.id ? action.payload : post
+        ),
+      },
+    };
+  case type.POST_REMOVE: {
+    const postIdToRemove = action.payload as unknown as PostData;
+    return {
+      ...state,
+      posts: {
+        ...state.posts,
+        data: state.posts.data.filter(post => post.id !== postIdToRemove.id),
+      },
+    };
+  }
   default:
     return state;
   }

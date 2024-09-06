@@ -7,8 +7,12 @@ export const API_ENDPOINTS = {
   POSTS: '/posts',
   LOGIN: '/account/login',
   REGISTER: '/account/register',
-  ACCOUNTS: '/accounts'
-  // Add more endpoints as needed
+  ACCOUNTS: '/accounts',
+  CREATE: '/posts/create',
+  UPDATE: '/posts/edit/:postId',
+  DELETE: '/posts/delete/:postId',
+  VIEW: '/posts/view/:postId',
+  MY_POSTS: '/posts/mypost'
 };
 
 const api = axios.create({
@@ -16,7 +20,6 @@ const api = axios.create({
   headers: {
     common: {
       'Content-Type': 'application/json',
-      // Add any other static headers here
     },
   },
 });
