@@ -25,5 +25,13 @@ export interface UserRegisterResponse {
     userId: number | string;
     username: string;
     email: string;
-  }
+  };
+  userId?: string | number;
+}
+
+export interface UserAccount {
+  userId: string | number,
+  username: string;
+  email: string;
+  role?:string;
 }

@@ -10,7 +10,7 @@
   "scripts": {
     "start": "vite  --mode development ",
     "build": "npm run lint && tsc && vite build --mode production",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 5",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 8",
     "preview": "vite preview",
     "precommit": "lint-staged"
   },

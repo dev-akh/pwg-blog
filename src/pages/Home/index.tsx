@@ -40,7 +40,7 @@ function Start() {
   }
 
   return (
-    <Grid container p={5}>
+    <Grid container py={5} alignItems="stretch" width="100%" className='main-container'>
       <Grid
         container
         justifyContent='space-between'
@@ -57,7 +57,7 @@ function Start() {
           color={'warning'}
           sx={{
             borderRadius: 25,
-            paddingX: 10,
+            paddingX: 3,
             textTransform: 'none',
             fontSize: 16,
             color:'black'
@@ -71,7 +71,7 @@ function Start() {
           sx={{
             color: 'warning',
             borderRadius: 25,
-            paddingX: 10,
+            paddingX: 3,
             textTransform: 'none',
             fontSize: 18
           }}

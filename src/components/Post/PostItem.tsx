@@ -15,6 +15,8 @@ import axios from 'axios';
 import { capitalizeFirstLetter } from '../../services/firstCharacter';
 import CustomPostModal from '../Modal/CustomPostModal';
 import { useNavigate } from 'react-router-dom';
+import { removePost } from '../../store/actions/post';
+import { useDispatch } from 'react-redux';
 
 const PostItem = ({ post }: { post: PostData }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -24,6 +26,7 @@ const PostItem = ({ post }: { post: PostData }) => {
   const [deleteErrorMsg, setDeleteErrorMsg] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     setOpen(false);
@@ -57,6 +60,7 @@ const PostItem = ({ post }: { post: PostData }) => {
       const postIdStr = String(selectedPostId);
       const endpoint = api.API_ENDPOINTS.DELETE.replace(':postId', postIdStr);
       await api.destroy(endpoint);
+      dispatch(removePost(post));
       setOpen(false);
       setDeleteErrorMsg(null);
     } catch (error) {
@@ -148,8 +152,8 @@ const PostItem = ({ post }: { post: PostData }) => {
             color={'success'}
             sx={{
               borderRadius: 5,
-              px: 3,
-              mx: 1,
+              px: 2,
+              m: 1,
               color: 'black',
               background: '#D9F8CF'
             }}
@@ -162,8 +166,8 @@ const PostItem = ({ post }: { post: PostData }) => {
             color={'warning'}
             sx={{
               borderRadius: 5,
-              px: 3,
-              mx: 1,
+              px: 2,
+              m: 1,
               color: 'black',
               background: '#F8B959'
             }}
@@ -176,8 +180,8 @@ const PostItem = ({ post }: { post: PostData }) => {
             color={'error'}
             sx={{
               borderRadius: 5,
-              px: 3,
-              mx: 1,
+              px: 2,
+              m: 1,
               color: 'black',
               background: '#F95A50'
             }}

@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   CircularProgress,
@@ -11,10 +12,13 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as api from '../../services/api'
-import { saveToken } from '../../utils/jwt';
+import { saveToken, saveUserEmail } from '../../utils/jwt';
 import CustomModal from '../Modal/CustomModal';
 import axios from 'axios';
 import { UserRegisterResponse, UserRegister } from '../../types/User';
+import { useDispatch } from 'react-redux';
+import { addUser } from '../../store/actions/account';
+import './index.css';
 
 const RegisterForm: React.FC = () => {
   const [username, setUsername] = useState<string | null>('');
@@ -28,9 +32,14 @@ const RegisterForm: React.FC = () => {
   const [success, setSuccess] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const closeModal = () => {
     setModalOpen(false);
+  }
+
+  const handleRole = (_event: unknown, role: string) => {
+    setRole(role);
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,6 +50,10 @@ const RegisterForm: React.FC = () => {
     }
     if (password.length < 6) {
       setError('Password must be at least 6 characters long');
+      return;
+    }
+    if (role !== 'admin' && role !== 'user') {
+      setError('Role must be either "admin" or "user".');
       return;
     }
     setLoading(true);
@@ -58,9 +71,11 @@ const RegisterForm: React.FC = () => {
       const response: UserRegisterResponse = await api.post(endpoint, data);
       if (response.token !== null) {
         saveToken(response.token);
+        saveUserEmail(response.account.email);
         setSuccess(true);
         setAlertMessage(response.message);
         setModalOpen(true);
+        dispatch(addUser(response.account));
       }
 
     } catch (error: unknown) {
@@ -192,31 +207,39 @@ const RegisterForm: React.FC = () => {
         </Stack>
         <Stack className="form-group py-3 mb-4">
           <label className="font-medium text-slate-700 pb-2">Role</label>
-          <TextField
-            type="text"
-            color="warning"
-            InputProps={{
-              sx: {
-                borderRadius: 25,
-                borderColor: '#F8B959',
-                height: 40,
-                '& input:-webkit-autofill': {
-                  WebkitBoxShadow: '0 0 0 1000px white inset',
-                  WebkitTextFillColor: '#000',
-                },
-                '& input:-webkit-autofill:focus': {
-                  WebkitBoxShadow: '0 0 0 1000px white inset',
-                  WebkitTextFillColor: '#000',
-                },
-                '& input:-webkit-autofill:hover': {
-                  WebkitBoxShadow: '0 0 0 1000px white inset',
-                  WebkitTextFillColor: '#000',
-                },
-              },
-            }}
+          <Autocomplete
+            options={['admin', 'user']}
             value={role}
-            onChange={(e) => setRole(e.target.value.toLowerCase())}
-            required
+            onChange={(event, newValue) => handleRole(event, newValue?.toLowerCase() || '')}
+            sx={{
+              py:0
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                color="warning"
+                InputProps={{
+                  ...params.InputProps,
+                  sx: {
+                    borderRadius: 5,
+                    borderColor: '#F8B959',
+                    '& input:-webkit-autofill': {
+                      WebkitBoxShadow: '0 0 0 1000px white inset',
+                      WebkitTextFillColor: '#000',
+                    },
+                    '& input:-webkit-autofill:focus': {
+                      WebkitBoxShadow: '0 0 0 1000px white inset',
+                      WebkitTextFillColor: '#000',
+                    },
+                    '& input:-webkit-autofill:hover': {
+                      WebkitBoxShadow: '0 0 0 1000px white inset',
+                      WebkitTextFillColor: '#000',
+                    },
+                  },
+                }}
+              />
+            )}
           />
         </Stack>
         {error && <div className="alert alert-danger text-danger mb-3">{error}</div>}

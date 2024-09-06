@@ -212,8 +212,8 @@ const CustomPostModal: React.FC<ModalProps> = ({ open, onClose, post, type }) =>
               textTransform: 'none',
               borderRadius: 20,
               background: '#FDEACD',
-              paddingX: 10,
-              mx: 2,
+              paddingX: 5,
+              m: 2,
               color: 'black'
             }}
             color={'warning'}
@@ -227,8 +227,8 @@ const CustomPostModal: React.FC<ModalProps> = ({ open, onClose, post, type }) =>
               textTransform: 'none',
               borderRadius: 20,
               background: '#F8B959',
-              paddingX: 10,
-              mx: 2,
+              paddingX: 5,
+              m: 2,
               color: 'black'
             }}
             color={'warning'}

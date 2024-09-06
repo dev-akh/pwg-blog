@@ -44,5 +44,10 @@ export const updatePost = (post: PostData) => ({
 });
 
 export const removeLastPost = () => ({
+  type: type.POST_REMOVE_LAST,
+});
+
+export const removePost = (post: PostData) => ({
   type: type.POST_REMOVE,
+  payload: post,
 });

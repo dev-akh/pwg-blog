@@ -24,9 +24,6 @@ const PostDetail = () => {
     const endpoint = api.API_ENDPOINTS.VIEW.replace(':postId', postId);
     try {
       const response = await api.get(endpoint);
-      if (!response.ok) {
-        setError('Error in fetching post data');
-      }
       setPost(response);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -63,7 +60,7 @@ const PostDetail = () => {
   const tags = post?.tags.map((tag, key) => <Chip key={key} sx={{ mr: 1, mt: 1, background: '#FDEACD' }} label={capitalizeFirstLetter(tag)} />);
 
   return (
-    <Grid container p={5}>
+    <Grid container py={5} alignItems="stretch" width="100%" className='main-container'>
       <Grid
         container
         justifyContent='space-between'
@@ -80,7 +77,7 @@ const PostDetail = () => {
           color={'warning'}
           sx={{
             borderRadius: 25,
-            paddingX: 10,
+            paddingX: 4,
             textTransform: 'none',
             fontSize: 16,
             color: 'black'
@@ -94,7 +91,7 @@ const PostDetail = () => {
           sx={{
             color: 'warning',
             borderRadius: 25,
-            paddingX: 10,
+            paddingX: 4,
             textTransform: 'none',
             fontSize: 18
           }}
@@ -110,7 +107,12 @@ const PostDetail = () => {
           container
           justifyContent='center'
           alignItems='center'
-          sx={{ flexGrow: 1 }}
+          item
+          xs={12}
+          sm={12}
+          md={10}
+          lg={8}
+          sx={{ marginLeft: { md: 'auto', lg: 'auto' }, marginRight: { md: 'auto', lg: 'auto' } }}
         >
           <Box
             className="flex flex-col space-y-5 p-5"
@@ -118,7 +120,7 @@ const PostDetail = () => {
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
-            sx={{ width: '70%' }}
+            sx={{ width: '100%' }}
           >
             <Typography variant='h4' py={4} color={'black'}>
               View Post

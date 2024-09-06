@@ -46,7 +46,7 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
         data: [action.payload, ...state.posts.data],
       },
     };
-  case type.POST_REMOVE:
+  case type.POST_REMOVE_LAST:
     return {
       ...state,
       posts: {
@@ -65,6 +65,16 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
         ),
       },
     };
+  case type.POST_REMOVE: {
+    const postIdToRemove = action.payload as unknown as PostData;
+    return {
+      ...state,
+      posts: {
+        ...state.posts,
+        data: state.posts.data.filter(post => post.id !== postIdToRemove.id),
+      },
+    };
+  }
   default:
     return state;
   }
