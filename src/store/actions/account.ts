@@ -18,7 +18,6 @@ export const fetchAccounts = () => async (dispatch: Dispatch) => {
     });
   } catch (error: unknown) {
     let errorMessage = 'Error in fetching accounts data';
-    console.error(error);
     if (axios.isAxiosError(error)) {
       if (error.response) {
         errorMessage = error.response.data.error || 'Invalid token'
@@ -26,37 +25,6 @@ export const fetchAccounts = () => async (dispatch: Dispatch) => {
     }
     dispatch({
       type: type.ACCOUNT_FAIL,
-      payload: errorMessage
-    });
-  }
-};
-
-export const fetchMyPosts = () => async (dispatch: Dispatch) => {
-
-  dispatch({
-    type: type.MYPOSTS,
-  });
-
-  const endpoint = api.API_ENDPOINTS.MY_POSTS;
-  try {
-    const response = await api.post(endpoint,{
-      limit:10,
-      page:1
-    });
-    dispatch({
-      type: type.MYPOSTS_SUCCESS,
-      payload: response,
-    });
-  } catch (error: unknown) {
-    let errorMessage = 'Error in fetching myposts data';
-    console.error(error);
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage = error.response.data.error || 'Invalid token'
-      }
-    }
-    dispatch({
-      type: type.MYPOSTS_FAIL,
       payload: errorMessage
     });
   }

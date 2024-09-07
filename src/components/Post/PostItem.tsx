@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { removePost } from '../../store/actions/post';
 import { useDispatch } from 'react-redux';
 
-const PostItem = ({ post }: { post: PostData }) => {
+const PostItem = ({ post }: { post: PostData, isAdmin: boolean }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [postOpen, setPostOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -138,10 +138,10 @@ const PostItem = ({ post }: { post: PostData }) => {
         </Grid>
 
         <Typography
-          variant='h4'
-          my={1}
+          variant='h5'
+          my={2}
         >
-          {truncateText(post.title, 5)}
+          {truncateText(post.title, 4)}
         </Typography>
         <Typography
           variant='body1'

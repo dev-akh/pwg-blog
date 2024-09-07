@@ -107,11 +107,11 @@ const CustomPostModal: React.FC<ModalProps> = ({ open, onClose, post, type }) =>
     >
       <DialogTitle className='text-white text-center'>
         {type == 'new' ? (
-          <Typography variant='h4' color={'black'}>
+          <Typography fontSize={28} color={'black'}>
             Add A New Post
           </Typography>
         ) : (
-          <Typography variant='h4' color={'black'}>
+          <Typography fontSize={28} color={'black'}>
             Edit Post
           </Typography>
         )}

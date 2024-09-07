@@ -5,5 +5,5 @@ export const isAdmin = (accounts: UserAccount[]) => {
   const userEmail = getUserEmail();
   const user = accounts.find(user => user.email === userEmail);
   const isAdmin = user && user.role === 'admin';
-  return isAdmin;
+  return isAdmin as boolean;
 }

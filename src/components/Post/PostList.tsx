@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Box, Grid, Pagination, Typography } from '@mui/material';
 import { postStates } from '../../store/reducers/post';
-import { fetchPosts } from '../../store/actions/post';
+import { fetchPosts, fetchMyPosts } from '../../store/actions/post';
 import { PostData } from '../../types/Post';
 import PostItem from './PostItem';
 import Loading from '../LoadingComponent';
 import { removeToken } from '../../utils/jwt';
 import { useNavigate } from 'react-router-dom';
 import { accountState } from '../../store/reducers/account';
-import { fetchAccounts, fetchMyPosts } from '../../store/actions/account';
+import { fetchAccounts } from '../../store/actions/account';
 import { isAdmin } from '../../services/role';
 import Widget from './Widget';
 
@@ -23,7 +23,7 @@ const mapStateToProps = (state: ReducerPostStates) => ({
   error: state.postReducer.error,
   accounts: state.accountReducer.accounts,
   accountLading: state.accountReducer.loading,
-  myposts: state.accountReducer.myposts
+  myposts: state.postReducer.myposts
 });
 
 const mapDispatchToProps = {
@@ -43,11 +43,20 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, a
   const limit: number = posts.limit;
   const totalPages: number = posts.totalPages;
 
+  const admin: boolean = isAdmin(accounts);
   useEffect(() => {
     fetchAccounts();
-    fetchMyPosts();
-    fetchPosts({ limit: 9, page: page });
-  }, [fetchPosts, fetchAccounts,fetchMyPosts, limit, page]);
+  }, [fetchAccounts]);
+
+  useEffect(() => {
+    if(admin){
+      fetchMyPosts({ limit: 9, page: page , admin: admin});
+      fetchPosts({ limit: 9, page: page });
+    } else {
+      fetchMyPosts({ limit: 9, page: page , admin: admin});
+    }
+  },[fetchMyPosts, limit, page, admin]);
+
 
   const handleChangePage = (_event: unknown, newPage: number): void => {
     if (page !== newPage) {
@@ -60,14 +69,13 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, a
     navigate('/login');
   }
 
-  const postListData = postItems.length > 0 ? postItems.map((post, key) => <PostItem key={key} post={post} />) : 'Empty';
-  const admin = isAdmin(accounts);
+  const postListData = postItems && postItems.length > 0 ? postItems.map((post, key) => <PostItem key={key} post={post} isAdmin={admin}/>) : [];
 
   return (
     <>
       {loading || accountLading ? (
         <Loading />
-      ) : postListData.length > 0 ? (
+      ) : (postItems && postListData.length > 0) ? (
         <>
           <Grid container
             justifyContent="center"
@@ -105,8 +113,11 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, a
           width={'100%'}
           flexDirection="column"
         >
-          <Typography variant="h6" style={{ marginTop: 16 }}>
+          <Typography variant="h4" style={{ marginTop: 16 }} color={'black'}>
             Empty Post Data!
+          </Typography>
+          <Typography variant="h6" style={{ marginTop: 16 }} color={'black'}>
+            Please try with another account
           </Typography>
         </Box>
       )}

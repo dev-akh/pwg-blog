@@ -1,17 +1,9 @@
-import { PostData } from '../../types/Post';
 import { UserAccount } from '../../types/User';
 import * as type from '../types';
 
 export interface accountState {
   user: UserAccount,
   accounts: UserAccount[],
-  myposts: {
-    page: number,
-    limit: number,
-    totalPages: number,
-    totalPosts: number,
-    data: PostData[]
-  },
   loading: boolean,
   error: string | null,
 }
@@ -21,13 +13,6 @@ const initialState: accountState = {
     username: '',
     email: '',
     role:'',
-  },
-  myposts: {
-    page: 1,
-    limit: 10,
-    totalPages: 1,
-    totalPosts: 0,
-    data:[]
   },
   accounts: [],
   loading: false,
@@ -41,6 +26,7 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
       ...state,
       loading: true,
       error: null,
+      accounts: []
     };
   case type.ACCOUNT_SUCCESS:
     return {
@@ -54,31 +40,13 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
       ...state,
       loading: false,
       error: action.payload,
+      accounts: []
     };
   case type.USER:
     return {
       ...state,
       loading: false,
       user: action.payload,
-    };
-  case type.MYPOSTS:
-    return {
-      ...state,
-      loading: true,
-      error: null,
-    };
-  case type.MYPOSTS_SUCCESS:
-    return {
-      ...state,
-      loading: false,
-      error: null,
-      myposts: action.payload,
-    };
-  case type.MYPOSTS_FAIL:
-    return {
-      ...state,
-      loading: false,
-      error: action.payload,
     };
   default:
     return state;

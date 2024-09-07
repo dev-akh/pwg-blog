@@ -40,7 +40,7 @@ npm install
 
 3. Run the application:
 ```
-npm run start
+npm start
 ```
 
 4. Open your browser and navigate to `http://localhost:3000`

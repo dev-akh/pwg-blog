@@ -6,13 +6,20 @@ import { Button, Grid } from '@mui/material';
 import PostList from '../../components/Post/PostList';
 import Loading from '../../components/LoadingComponent';
 import CustomPostModal from '../../components/Modal/CustomPostModal';
+import CustomConfirmModal from '../../components/Modal/CustomComfirm';
 
 function Start() {
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
   const [newPost, setNewPost] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const handleCloseLogout = () => {
+    setError(null);
+    setOpen(false);
+  }
   const handleOnClose = () => {
     setNewPost(false);
   }
@@ -30,9 +37,18 @@ function Start() {
   }, [navigate]);
 
   const handleLogout = () => {
-    removeToken();
-    navigate('/login');
+    setError(null);
+    setLoading(true);
+    try {
+      removeToken();
+      navigate('/login');
+    } catch (error) {
+      setError('Something wrong in logging out process');
+    } finally {
+      setLoading(false);
+    }
   }
+
   if (loading) {
     return (
       <Loading />
@@ -60,7 +76,7 @@ function Start() {
             paddingX: 3,
             textTransform: 'none',
             fontSize: 16,
-            color:'black'
+            color: 'black'
           }}
           onClick={handleNewPost}
         >
@@ -75,14 +91,15 @@ function Start() {
             textTransform: 'none',
             fontSize: 18
           }}
-          onClick={handleLogout}
+          onClick={() => setOpen(true)}
         >
           Logout
         </Button>
       </Grid>
 
       <PostList />
-      <CustomPostModal open ={newPost} post={null} onClose={handleOnClose} type='new'/>
+      <CustomPostModal open={newPost} post={null} onClose={handleOnClose} type='new' />
+      <CustomConfirmModal open={open} onClose={handleCloseLogout} onConfirm={handleLogout} loading={loading} body='Are you sure want to logout?' errorMessage={error} />
     </Grid>
   );
 }
