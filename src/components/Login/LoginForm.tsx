@@ -96,9 +96,9 @@ const LoginForm: React.FC = () => {
   }, [success, navigate]);
 
   return (
-    <Box className=' bg-white p-20 rounded-lg'>
+    <Box className=' bg-white p-20 rounded-lg auth-form'>
       <form onSubmit={handleSubmit} className='text-start'>
-        <Typography variant='h4' className='text-center' color='black'>
+        <Typography variant='h4' className='text-center auth-title-text' color='black'>
           Login Page
         </Typography>
         <Stack className='form-group py-3'>
@@ -179,6 +179,7 @@ const LoginForm: React.FC = () => {
       </form>
       <Grid className='pt-4 text-center'>
         <Link
+          className='auth-link-text'
           href='/register'
           underline='none'
           variant='h6'

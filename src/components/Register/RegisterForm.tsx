@@ -109,9 +109,9 @@ const RegisterForm: React.FC = () => {
   }, [success, navigate]);
 
   return (
-    <Box className=" bg-white p-20 rounded-lg ">
+    <Box className=" bg-white p-20 rounded-lg auth-form">
       <form onSubmit={handleSubmit} className="text-start">
-        <Typography variant="h4" className="text-center" color="black">
+        <Typography variant="h4" className="text-center auth-title-text" color="black">
           Register User
         </Typography>
 
@@ -261,6 +261,7 @@ const RegisterForm: React.FC = () => {
       </form>
       <Grid className="pt-4 text-center">
         <Link
+          className='auth-link-text'
           href="/login"
           underline="none"
           variant="h6"
