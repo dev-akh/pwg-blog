@@ -33,6 +33,47 @@ export const fetchPosts = ({ limit, page }: { limit: number, page: number }) => 
   }
 };
 
+
+export const fetchMyPosts = ({ limit, page, admin}: { limit: number, page: number, admin: boolean }) => async (dispatch: Dispatch) => {
+
+  dispatch({
+    type: type.MYPOSTS,
+  });
+
+  const endpoint = api.API_ENDPOINTS.MY_POSTS;
+  try {
+    const response = await api.post(endpoint,{ limit: limit, page: page });
+    dispatch({
+      type: type.MYPOSTS_SUCCESS,
+      payload: response,
+    });
+    if(!admin){
+      dispatch({
+        type: type.POST_SUCCESS,
+        payload: response,
+      });
+    }
+  } catch (error: unknown) {
+    let errorMessage = 'Error in fetching myposts data';
+    console.error(error);
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        errorMessage = error.response.data.error || 'Invalid token'
+      }
+    }
+    dispatch({
+      type: type.MYPOSTS_FAIL,
+      payload: errorMessage
+    });
+    if(!admin){
+      dispatch({
+        type: type.POST_FAIL,
+        payload: errorMessage
+      });
+    }
+  }
+};
+
 export const addPost = (post: PostData) => ({
   type: type.POST_ADD,
   payload: post,

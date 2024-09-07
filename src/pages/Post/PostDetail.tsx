@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Grid, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { removeToken } from '../../utils/jwt';
+import { getToken, removeToken } from '../../utils/jwt';
 import BlankCard from '../../components/Post/BlankCard';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -9,14 +9,23 @@ import * as api from '../../services/api';
 import axios from 'axios';
 import Loading from '../../components/LoadingComponent';
 import { capitalizeFirstLetter } from '../../services/firstCharacter';
+import CustomConfirmModal from '../../components/Modal/CustomComfirm';
 
 const PostDetail = () => {
+
+  const navigate = useNavigate();
 
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const [logoutError, setLogoutError] = useState<string | null>(null);
 
+  const handleCloseLogout = () => {
+    setLogoutError(null);
+    setOpen(false);
+  }
 
   const fetchPostDetail = async (postId: string) => {
     setLoading(true);
@@ -43,18 +52,32 @@ const PostDetail = () => {
   }
 
   useEffect(() => {
+    if (getToken()) {
+      setLoading(false);
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const typePostId = postId as string;
     fetchPostDetail(typePostId);
   }, [postId]);
 
-  const navigate = useNavigate();
   const handleBack = () => {
     navigate('/');
   }
 
   const handleLogout = () => {
-    removeToken();
-    navigate('/login');
+    setLoading(true);
+    try {
+      removeToken();
+      navigate('/login');
+    } catch (error) {
+      setError('Something wrong in logging out process');
+    } finally {
+      setLoading(false);
+    }
   }
 
   const tags = post?.tags.map((tag, key) => <Chip key={key} sx={{ mr: 1, mt: 1, background: '#FDEACD' }} label={capitalizeFirstLetter(tag)} />);
@@ -95,7 +118,7 @@ const PostDetail = () => {
             textTransform: 'none',
             fontSize: 18
           }}
-          onClick={handleLogout}
+          onClick={() => setOpen(true)}
         >
           Logout
         </Button>
@@ -181,7 +204,7 @@ const PostDetail = () => {
           </Box>
         </Grid>
       )}
-
+      <CustomConfirmModal open={open} onClose={handleCloseLogout} onConfirm={handleLogout} loading={loading} body='Are you sure want to logout?' errorMessage={logoutError} />
     </Grid>
   )
 }

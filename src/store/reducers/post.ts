@@ -5,6 +5,13 @@ export interface postStates {
   posts: PostDataList,
   loading: boolean,
   error: string | null,
+  myposts: {
+    page: number,
+    limit: number,
+    totalPages: number,
+    totalPosts: number,
+    data: PostData[]
+  },
 }
 const initialState: postStates = {
   posts: {
@@ -13,6 +20,13 @@ const initialState: postStates = {
     limit: 9,
     totalPages: 1,
     totalPosts: 9
+  },
+  myposts: {
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+    totalPosts: 0,
+    data:[]
   },
   loading: false,
   error: null,
@@ -25,6 +39,10 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
       ...state,
       loading: true,
       error: null,
+      posts: {
+        ...state.posts,
+        data: [],
+      },
     };
   case type.POST_SUCCESS:
     return {
@@ -37,13 +55,23 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
       ...state,
       loading: false,
       error: action.payload,
+      posts: {
+        ...state.posts,
+        data: [],
+      },
     };
   case type.POST_ADD:
     return {
       ...state,
       posts: {
         ...state.posts,
+        totalPosts: state.posts.totalPosts + 1,
         data: [action.payload, ...state.posts.data],
+      },
+      myposts: {
+        ...state.myposts,
+        totalPosts: state.myposts.totalPosts + 1,
+        data: [action.payload, ...state.myposts.data],
       },
     };
   case type.POST_REMOVE_LAST:
@@ -71,10 +99,43 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
       ...state,
       posts: {
         ...state.posts,
+        totalPosts: state.posts.totalPosts - 1,
         data: state.posts.data.filter(post => post.id !== postIdToRemove.id),
+      },
+      myposts: {
+        ...state.myposts,
+        totalPosts: state.myposts.totalPosts - 1,
+        data: state.myposts.data.filter(post => post.id !== postIdToRemove.id),
       },
     };
   }
+  case type.MYPOSTS:
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      myposts: {
+        ...state.myposts,
+        data: [],
+      },
+    };
+  case type.MYPOSTS_SUCCESS:
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      myposts: action.payload,
+    };
+  case type.MYPOSTS_FAIL:
+    return {
+      ...state,
+      loading: false,
+      error: action.payload,
+      myposts: {
+        ...state.myposts,
+        data: [],
+      },
+    };
   default:
     return state;
   }
