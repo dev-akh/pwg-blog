@@ -25,6 +25,7 @@
   .auth-form {
     width: 120% !important;
     margin-top: -20%;
+    padding: 10% !important;
   }
   .auth-link-text {
     font-size: 12px !important;
