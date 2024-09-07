@@ -36,7 +36,7 @@ const CustomConfirmModal: React.FC<ModalProps> = ({ open, onClose, onConfirm, lo
       <DialogContent className="p-6 bg-white text-gray-700">
         {body}
       </DialogContent>
-      <DialogActions className="flex flex-col">
+      <DialogActions className="flex flex-col confirm-form">
         <Typography variant='body2' color={'error'}>
           {errorMessage}
         </Typography>
