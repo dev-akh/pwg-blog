@@ -11,6 +11,29 @@
     transform: rotate(360deg);
   }
 }
+.auth-form {
+  width: 500px;
+}
+
+@media (max-width: 1200px) {
+  .auth-form {
+    width: 400px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-form {
+    width: 120% !important;
+    margin-top: -20%;
+  }
+  .auth-link-text {
+    font-size: 12px !important;
+  }
+  .auth-title-text {
+    font-size: 18px !important;
+    padding-bottom: 10% !important;
+  }
+}
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
