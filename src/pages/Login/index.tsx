@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <Grid className='p-10'>
-      <Box className="flex flex-col space-y-5 p-5" sx={{ placeItems: 'center' }}>
+      <Box className="flex flex-col space-y-5 p-5" mt={10} sx={{ placeItems: 'center' }}>
         <LoginForm />
       </Box>
     </Grid>
