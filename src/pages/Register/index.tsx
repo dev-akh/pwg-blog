@@ -28,7 +28,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <Grid className='p-10'>
-      <Box className="flex flex-col space-y-5 p-5" alignItems={'center'}>
+      <Box className="flex flex-col space-y-5 p-5" mt={10} alignItems={'center'}>
         <RegisterForm />
       </Box>
     </Grid>
