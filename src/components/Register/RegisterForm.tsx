@@ -109,7 +109,7 @@ const RegisterForm: React.FC = () => {
   }, [success, navigate]);
 
   return (
-    <Box className=" bg-white p-20 rounded-lg " width={500}>
+    <Box className=" bg-white p-20 rounded-lg ">
       <form onSubmit={handleSubmit} className="text-start">
         <Typography variant="h4" className="text-center" color="black">
           Register User
