@@ -79,7 +79,7 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
       ...state,
       posts: {
         ...state.posts,
-        data: state.posts.data.slice(0, -1),
+        data: state.posts.data.length >= 9 ? state.posts.data.slice(0, -1) : state.posts.data,
       },
     };
   case type.POST_UPDATE:
