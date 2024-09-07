@@ -30,15 +30,18 @@ const PostItem = ({ post }: { post: PostData }) => {
 
   const handleClose = () => {
     setOpen(false);
+    setDeleteErrorMsg(null);
     setSelectedPostId(0);
   }
 
   const handlePostClose = () => {
     setPostOpen(false);
+    setDeleteErrorMsg(null);
   }
 
   const handleOpenPost = () => {
     setPostOpen(true);
+    setDeleteErrorMsg(null);
   }
 
   const handleViewPost = (postId: number) => {
@@ -47,6 +50,7 @@ const PostItem = ({ post }: { post: PostData }) => {
 
   const handleDeleteClick = (postId: number) => {
     setSelectedPostId(postId);
+    setDeleteErrorMsg(null);
     setOpen(true);
   }
 
@@ -56,6 +60,7 @@ const PostItem = ({ post }: { post: PostData }) => {
       return;
     }
     setLoading(true);
+    setDeleteErrorMsg(null);
     try {
       const postIdStr = String(selectedPostId);
       const endpoint = api.API_ENDPOINTS.DELETE.replace(':postId', postIdStr);
