@@ -21,3 +21,15 @@ export const getUserEmail= () => {
 export const removeUserEmail= () => {
   localStorage.removeItem('userEmail');
 };
+
+export const saveUserId = (id: number | string) => {
+  localStorage.setItem('userId', `${id}`);
+}
+
+export const getUserId= () => {
+  return localStorage.getItem('userId');
+};
+
+export const removeUserId= () => {
+  localStorage.removeItem('userId');
+};

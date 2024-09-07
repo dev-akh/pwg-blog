@@ -22,7 +22,7 @@ const mapStateToProps = (state: ReducerPostStates) => ({
   posts: state.postReducer.posts,
   error: state.postReducer.error,
   accounts: state.accountReducer.accounts,
-  accountLading: state.accountReducer.loading,
+  accountLoading: state.accountReducer.loading,
   myposts: state.postReducer.myposts
 });
 
@@ -36,9 +36,10 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, accountLading, myposts, fetchPosts, fetchAccounts, fetchMyPosts }) => {
+const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, accountLoading, myposts, fetchPosts, fetchAccounts, fetchMyPosts }) => {
   const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
+  const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
   const postItems: PostData[] = posts.data;
   const limit: number = posts.limit;
   const totalPages: number = posts.totalPages;
@@ -49,14 +50,18 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, a
   }, [fetchAccounts]);
 
   useEffect(() => {
-    if(admin){
-      fetchMyPosts({ limit: 9, page: page , admin: admin});
-      fetchPosts({ limit: 9, page: page });
-    } else {
-      fetchMyPosts({ limit: 9, page: page , admin: admin});
-    }
-  },[fetchMyPosts, limit, page, admin]);
-
+    const fetchData = async () => {
+      setIsDataLoading(true);
+      if (admin) {
+        await fetchMyPosts({ limit: 9, page: page, admin: admin });
+        await fetchPosts({ limit: 9, page: page });
+      } else {
+        await fetchMyPosts({ limit: 9, page: page, admin: admin });
+      }
+      setIsDataLoading(false);
+    };
+    fetchData();
+  }, [fetchMyPosts, limit, page, admin]);
 
   const handleChangePage = (_event: unknown, newPage: number): void => {
     if (page !== newPage) {
@@ -69,13 +74,13 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, a
     navigate('/login');
   }
 
-  const postListData = postItems && postItems.length > 0 ? postItems.map((post, key) => <PostItem key={key} post={post} isAdmin={admin}/>) : [];
+  const postListData = postItems && postItems.length > 0 ? postItems.map((post, key) => <PostItem key={key} post={post} isAdmin={admin} />) : [];
 
   return (
     <>
-      {loading || accountLading ? (
+      {loading || accountLoading || isDataLoading ? (
         <Loading />
-      ) : (postItems && postListData.length > 0) ? (
+      ) : (postListData.length > 0) ? (
         <>
           <Grid container
             justifyContent="center"
@@ -89,7 +94,7 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, a
             </Typography>
           </Grid>
           {admin && (
-            <Widget totalAccount={accounts.length} totalPost={posts.totalPosts} totalMyPost={myposts.totalPosts}/>
+            <Widget totalAccount={accounts.length} totalPost={posts.totalPosts} totalMyPost={myposts.totalPosts} />
           )}
           <Grid container spacing={5}>
             {postListData}
@@ -99,7 +104,7 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, a
               count={totalPages}
               page={page}
               onChange={(event, newPage) => handleChangePage(event, newPage)}
-              color="primary"
+              color='primary'
               sx={{ display: 'flex', justifyContent: 'center' }}
             />
           </Grid>
@@ -117,7 +122,7 @@ const PostList: React.FC<PropsFromRedux> = ({ loading, posts, error, accounts, a
             Empty Post Data!
           </Typography>
           <Typography variant="h6" style={{ marginTop: 16 }} color={'black'}>
-            Please try with another account
+            Please create a new post or try with another account
           </Typography>
         </Box>
       )}
