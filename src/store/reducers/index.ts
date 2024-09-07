@@ -2,10 +2,11 @@ import { combineReducers } from 'redux';
 import {  persistReducer  } from 'redux-persist'
 import storage from 'redux-persist/es/storage'
 import post from './post'
+import account from './account'
 
 const reducers = combineReducers({
-  post,
-  // add more reducer
+  postReducer: post,
+  accountReducer: account,
 })
 
 const config = {

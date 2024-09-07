@@ -1,10 +1,18 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { getToken } from '../utils/jwt';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const API_ENDPOINTS = {
   POSTS: '/posts',
-  // Add more endpoints as needed
+  LOGIN: '/account/login',
+  REGISTER: '/account/register',
+  ACCOUNTS: '/accounts',
+  CREATE: '/posts/create',
+  UPDATE: '/posts/edit/:postId',
+  DELETE: '/posts/delete/:postId',
+  VIEW: '/posts/view/:postId',
+  MY_POSTS: '/posts/mypost'
 };
 
 const api = axios.create({
@@ -12,9 +20,16 @@ const api = axios.create({
   headers: {
     common: {
       'Content-Type': 'application/json',
-      // Add any other static headers here
     },
   },
+});
+
+api.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`; // Set Authorization header
+  }
+  return config;
 });
 
 interface RequestConfig extends AxiosRequestConfig {
@@ -26,11 +41,20 @@ const createRequest = async (config: RequestConfig) => {
   return response.data;
 };
 
-export const get = (endpoint: string, params = {}) => {
-  return createRequest({ method: 'get', url: endpoint, params });
+
+
+export const get = (endpoint: string, params = {}, headers = {}) => {
+  return createRequest({
+    method: 'get',
+    url: endpoint,
+    params,
+    headers: {
+      ...headers,
+    },
+  });
 };
 
-export const post = (endpoint: string, data: JSON, headers = {}) => {
+export const post = (endpoint: string, data: Record<string, any>, headers = {}) => {
   return createRequest({
     method: 'post',
     url: endpoint,
@@ -42,7 +66,7 @@ export const post = (endpoint: string, data: JSON, headers = {}) => {
   });
 };
 
-export const put = (endpoint: string, data: JSON, headers = {}) => {
+export const put = (endpoint: string, data: Record<string, any>, headers = {}) => {
   return createRequest({
     method: 'put',
     url: endpoint,

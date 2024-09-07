@@ -13,6 +13,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
+    '@typescript-eslint/no-explicit-any': 'warn',
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
@@ -25,5 +27,6 @@ module.exports = {
     'indent': ['error', 2, { FunctionDeclaration: { parameters: 'first' } }],
     'no-trailing-spaces': 'error',
     'eol-last': ['error', 'always'],
+    "no-case-declarations": "warn",
   },
 }
