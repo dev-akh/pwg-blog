@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as api from '../../services/api'
-import { saveToken, saveUserEmail } from '../../utils/jwt';
+import { saveToken, saveUserEmail, saveUserId } from '../../utils/jwt';
 import { UserLoginResponse } from '../../types/User';
 import CustomModal from '../Modal/CustomModal';
 import axios from 'axios';
@@ -58,6 +58,7 @@ const LoginForm: React.FC = () => {
       if (response.token !== null) {
         saveToken(response.token);
         saveUserEmail(response.email);
+        saveUserId(response.userId);
         setSuccess(true);
         setAlertMessage(response.message);
         setModalOpen(true);

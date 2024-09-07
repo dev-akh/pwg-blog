@@ -1,5 +1,6 @@
 import * as type from '../types';
 import { PostData, PostDataList } from '../../types/Post'
+import { getUserId } from '../../utils/jwt';
 
 export interface postStates {
   posts: PostDataList,
@@ -104,8 +105,8 @@ const reducer = (state = initialState, action: { type: string, payload: JSON }) 
       },
       myposts: {
         ...state.myposts,
-        totalPosts: state.myposts.totalPosts - 1,
-        data: state.myposts.data.filter(post => post.id !== postIdToRemove.id),
+        totalPosts: getUserId() === `${postIdToRemove.id}` ? state.myposts.totalPosts - 1 : state.myposts.totalPosts,
+        data: getUserId() === `${postIdToRemove.id}` ? state.myposts.data.filter(post => post.id !== postIdToRemove.id) : state.myposts.data,
       },
     };
   }
